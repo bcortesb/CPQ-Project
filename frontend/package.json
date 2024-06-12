@@ -1,0 +1,25 @@
+{
+    "name": "cpq-frontend",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start -p 3000",
+      "lint": "next lint"
+    },
+    "dependencies": {
+      "next": "latest",
+      "react": "latest",
+      "react-dom": "latest",
+      "axios": "^0.21.1",
+      "tailwindcss": "^2.0.3",
+      "autoprefixer": "^10.2.4",
+      "postcss": "^8.2.6"
+    },
+    "devDependencies": {
+      "eslint": "latest",
+      "eslint-config-next": "latest"
+    }
+  }
+  
