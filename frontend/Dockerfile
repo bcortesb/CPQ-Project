@@ -1,36 +1,23 @@
-# First stage: Build stage
-FROM node:18 AS builder
+# Use the official Node.js image from the Docker Hub with version >= 18.17.0
+FROM node:18
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy dependency files and install dependencies
-COPY package.json package-lock.json* ./
-RUN npm install --frozen-lockfile
+# Copy the package.json and package-lock.json files into the container
+COPY package.json package-lock.json ./
 
-# Copy the rest of the application code
+# Install the Node.js dependencies
+RUN npm install
+
+# Copy the rest of the application code into the container
 COPY . .
 
-# Build the application
+# Build the Next.js application
 RUN npm run build
-
-# List the contents of the .next directory to verify build artifacts
-RUN ls -la .next
-
-# Second stage: Runtime stage
-FROM node:18-slim
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the built application from the builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
 
 # Expose port 3000 for the Next.js app
 EXPOSE 3000
 
-# Start the application in production mode
+# Start the Next.js application
 CMD ["npm", "start"]

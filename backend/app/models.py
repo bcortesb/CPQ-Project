@@ -37,7 +37,6 @@ class Quote(Base):
     product_id = Column(Integer, ForeignKey('products.id'))
     quantity = Column(Integer)
     total_price = Column(Float)
-
     product = relationship("Product")
 
 class QuoteSubProduct(Base):
@@ -46,5 +45,4 @@ class QuoteSubProduct(Base):
     quote_id = Column(Integer, ForeignKey('quotes.id'))
     subproduct_id = Column(Integer, ForeignKey('subproducts.id'))
     quantity = Column(Integer)
-
     subproduct = relationship("SubProduct")

@@ -1,35 +1,32 @@
-# version: '3.8'
+version: '3.7'
+
 services:
   backend:
-    build:
-      context: ./backend
-    volumes:
-      - ./backend:/app
+    build: ./backend
     ports:
       - "8000:8000"
-    env_file:
-      - .env
+    volumes:
+      - ./backend/app:/app/app
     depends_on:
       - db
 
   frontend:
-    build:
-      context: ./frontend
-    volumes:
-      - ./frontend:/app
+    build: ./frontend
     ports:
       - "3000:3000"
-    depends_on:
-      - backend
+    volumes:
+      - ./frontend:/app
+    environment:
+      - NODE_ENV=development  # Ensure this is set to a standard value
 
   db:
     image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: cpq-user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: cpqDb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  pgdata:

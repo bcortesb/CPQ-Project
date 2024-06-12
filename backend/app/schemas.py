@@ -1,14 +1,28 @@
 from pydantic import BaseModel
-from typing import List
 
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     username: str
+
+class UserCreate(UserBase):
     password: str
 
-class User(BaseModel):
+class User(UserBase):
     id: int
-    username: str
     is_admin: bool
+
+    class Config:
+        orm_mode = True
+
+class ProductBase(BaseModel):
+    name: str
+    price: float
+    description: str
+
+class ProductCreate(ProductBase):
+    pass
+
+class Product(ProductBase):
+    id: int
 
     class Config:
         orm_mode = True
@@ -20,7 +34,7 @@ class SubProductBase(BaseModel):
     image_url: str
 
 class SubProductCreate(SubProductBase):
-    pass
+    product_id: int
 
 class SubProduct(SubProductBase):
     id: int
@@ -28,31 +42,16 @@ class SubProduct(SubProductBase):
     class Config:
         orm_mode = True
 
-class ProductBase(BaseModel):
-    name: str
-    price: float
-    description: str
-
-class ProductCreate(ProductBase):
-    subproducts: List[SubProductCreate] = []
-
-class Product(ProductBase):
-    id: int
-    subproducts: List[SubProduct] = []
-
-    class Config:
-        orm_mode = True
-
 class QuoteBase(BaseModel):
     product_id: int
     quantity: int
+    total_price: float
 
 class QuoteCreate(QuoteBase):
-    subproducts: List[dict] = []
+    pass
 
 class Quote(QuoteBase):
     id: int
-    total_price: float
 
     class Config:
         orm_mode = True
