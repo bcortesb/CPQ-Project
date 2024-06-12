@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   backend:
@@ -14,10 +14,10 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=production
     volumes:
       - ./frontend:/app
-    environment:
-      - NODE_ENV=development  # Ensure this is set to a standard value
 
   db:
     image: postgres:13

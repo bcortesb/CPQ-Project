@@ -1,37 +1,19 @@
 import { useState } from 'react'
 import axios from 'axios'
 
-export default function ProductForm({ token, product, onSave }) {
+export default function ProductForm({ product, onSave }) {
   const [name, setName] = useState(product ? product.name : '')
   const [price, setPrice] = useState(product ? product.price : '')
   const [description, setDescription] = useState(product ? product.description : '')
-  const [subproducts, setSubproducts] = useState(product ? product.subproducts : [])
-
-  const handleAddSubproduct = () => {
-    setSubproducts([...subproducts, { name: '', description: '', price: '', image_url: '' }])
-  }
-
-  const handleSubproductChange = (index, field, value) => {
-    const updatedSubproducts = subproducts.map((subproduct, i) => i === index ? { ...subproduct, [field]: value } : subproduct)
-    setSubproducts(updatedSubproducts)
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const data = { name, price: parseFloat(price), description, subproducts }
+    const productData = { name, price, description }
     try {
       if (product) {
-        await axios.put(`http://localhost:8000/products/${product.id}`, data, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+        await axios.put(`http://localhost:8000/products/${product.id}`, productData)
       } else {
-        await axios.post('http://localhost:8000/products', data, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+        await axios.post('http://localhost:8000/products', productData)
       }
       onSave()
     } catch (error) {
@@ -40,81 +22,39 @@ export default function ProductForm({ token, product, onSave }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-sm">
+      <h1 className="text-2xl font-bold mb-4">{product ? 'Edit Product' : 'Add Product'}</h1>
+      <div className="mb-4">
+        <label className="block text-gray-700">Name</label>
         <input
           type="text"
-          id="name"
+          className="w-full px-3 py-2 border rounded"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full"
+          required
         />
       </div>
-      <div>
-        <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+      <div className="mb-4">
+        <label className="block text-gray-700">Price</label>
         <input
           type="number"
-          id="price"
+          className="w-full px-3 py-2 border rounded"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="mt-1 block w-full"
+          required
         />
       </div>
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+      <div className="mb-4">
+        <label className="block text-gray-700">Description</label>
         <textarea
-          id="description"
+          className="w-full px-3 py-2 border rounded"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="mt-1 block w-full"
-        />
+          required
+        ></textarea>
       </div>
-      <div>
-        <h3 className="text-lg font-medium text-gray-900">Subproducts</h3>
-        {subproducts.map((subproduct, index) => (
-          <div key={index} className="mt-4 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Subproduct Name</label>
-              <input
-                type="text"
-                value={subproduct.name}
-                onChange={(e) => handleSubproductChange(index, 'name', e.target.value)}
-                className="mt-1 block w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Subproduct Description</label>
-              <textarea
-                value={subproduct.description}
-                onChange={(e) => handleSubproductChange(index, 'description', e.target.value)}
-                className="mt-1 block w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Subproduct Price</label>
-              <input
-                type="number"
-                value={subproduct.price}
-                onChange={(e) => handleSubproductChange(index, 'price', e.target.value)}
-                className="mt-1 block w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Subproduct Image URL</label>
-              <input
-                type="text"
-                value={subproduct.image_url}
-                onChange={(e) => handleSubproductChange(index, 'image_url', e.target.value)}
-                className="mt-1 block w-full"
-              />
-            </div>
-          </div>
-        ))}
-        <button type="button" onClick={handleAddSubproduct} className="mt-4 py-2 px-4 bg-green-600 text-white">Add Subproduct</button>
-      </div>
-      <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white">
-        {product ? 'Update' : 'Add'} Product
+      <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+        Save
       </button>
     </form>
   )
